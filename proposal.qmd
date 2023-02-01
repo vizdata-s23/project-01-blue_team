@@ -1,5 +1,5 @@
 ---
-title: "Project title"
+title: "Chocolate Bar Rating Analysis"
 subtitle: "Proposal"
 format: html
 editor: visual
@@ -22,7 +22,7 @@ chocolate <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 
 # Dataset
 
-The Chocolate Bar Ratings data set comes from the \"Flavors of Cacao\" database by way of Georgios and Kelsey, two contributors to the TidyTuesday repository. The data set contains `r count(chocolate) %>% pull()` observations of `r ncol(chocolate) %>% pull()` variables that describe different attributed of chocolate bars. Some are categorical variables, such as ingredients, country of bean origin, and memorable characteristics of the chocolate, while others are numeric, such as cocoa percentage, rating, and review date. The creators rate chocolate bars on a scale from 1.0 to 5.0 by a combination of both objective and subjective factors.
+The Chocolate Bar Ratings data set comes from the \"Flavors of Cacao\" database by way of Georgios and Kelsey, two contributors to the TidyTuesday repository. The data set contains `r count(chocolate) %>% pull()` observations of `r ncol(chocolate) %>% pull()` variables that describe different attributes of chocolate bars. Some are categorical variables, such as ingredients, country of bean origin, and memorable characteristics of the chocolate, while others are numeric, such as cocoa percentage, rating, and review date. The creators rate chocolate bars on a scale from 1.0 to 5.0 by a combination of both objective and subjective factors.
 
 Our group identified a common interest in chocolate, and specifically wanted to know more about what factors contribute to the overall quality of a chocolate bar. This data set provides a great opportunity to examine the cocoa percentage, country of origin, manufacturer, ingredients, and characteristics to ultimately identify how some of these traits affect chocolate bar ratings.
 
@@ -35,4 +35,4 @@ Our group identified a common interest in chocolate, and specifically wanted to 
 
 To answer \"How does cocoa percentage affect chocolate bar ratings for chocolates originating from different countries?\", we will need to visualize the relationship between \`cocoa_percent\` and \`rating\`. Since there are many distinct \`country_of_bean_origin\` values in the dataset, we will not be able to fully visualize the relationship for each country. We will experiment with different grouping options for this variable (for example, one option would be choosing the \`n\` countries with the most observations, and then creating an \'Other\' category.) Once we have our groups, we will experiment with different plot formats to see what is the most informative visualization (for example, some options would be faceting by \`country_of_bean_origin\` or keeping them all on the same plot.)
 
-To answer "How does the presence of different ingredients affect chocolate bar ratings over time?", we will first need to create new dummy variables indicating whether each chocolate bar contains each of the seven listed ingredients in the dataset. These will be binary variables, with cells containing "1" if the bar has the ingredient and "0" otherwise. Then, we will visualize the relationship between \`rating\` and time (\`review_date\`). Finally, we will experiment with different plot formats to see what is the most informative visualization (for example, some options would be creating separate plots for each ingredient or keeping them all on the same plot.)
+To answer "How does the presence of different ingredients affect chocolate bar ratings over time?", we will first need to create new dummy variables indicating whether each chocolate bar contains each of the seven listed ingredients in the data set. These will be binary variables, with cells containing "1" if the bar has the ingredient and "0" otherwise. Then, we will visualize the relationship between \`rating\` and time (\`review_date\`). Finally, we will experiment with different plot formats to see what is the most informative visualization (for example, some options would be creating separate plots for each ingredient or keeping them all on the same plot.)
