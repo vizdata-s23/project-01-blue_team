@@ -9,6 +9,7 @@ editor: visual
 #| label: load-pkgs
 #| message: false
 #| warning: false
+#| echo: false
 
 library(tidyverse)
 ```
@@ -16,6 +17,7 @@ library(tidyverse)
 ```{r}
 #| label: load-data
 #| message: false
+#| echo: false
 
 chocolate <- readr::read_csv("data/chocolate.csv")
 ```
@@ -30,11 +32,17 @@ We selected this dataset because our group identified a common interest in choco
 
 ## Questions
 
-1.  How does cocoa percentage affect chocolate bar ratings for chocolates originating from different countries?
-2.  How do the presence of different ingredients affect chocolate bar ratings over time?
+1.  How have chocolate bar ratings for chocolates originating from different Latin American countries changed over time, and how is this impacted by cocoa percentage?
+2.  How has the count and type of ingredients in chocolate bars affected their  ratings over time?
 
 ## Analysis plan
 
-To answer "How does cocoa percentage affect chocolate bar ratings for chocolates originating from different countries?", we will need to visualize the relationship between `cocoa_percent` and `rating`. Since there are many distinct `country_of_bean_origin` values in the dataset, we will not be able to fully visualize the relationship for each country. We will experiment with different grouping options for this variable (for example, one option would be choosing the 5 countries with the most observations, and then creating an 'Other' category. We chose 5 because he top 5 countries have adequate observations for us to work with, and we don't want to overcrowd our plots.) Once we have our groups, we will experiment with different plot formats to see what is the most informative visualization (for example, some options would be faceting by `country_of_bean_origin` or keeping them all on the same plot.) The type of plot for this question would be a scatterplot using the geom_point function in ggplot. 
+### Question 1
 
-To answer "How does the presence of different ingredients affect chocolate bar ratings over time?", we will first need to create new dummy variables indicating whether each chocolate bar contains each of the seven listed ingredients in the data set. These will be binary variables, with cells containing "1" if the bar has the ingredient and "0" otherwise. Then, we will visualize the relationship between `rating` and time (`review_date`). Finally, we will experiment with different plot formats to see what is the most informative visualization (for example, some options would be creating separate plots for each ingredient or keeping them all on the same plot.) We plan on using the geom_line function (lineplot) in ggplot to achieve the appropriate display. 
+To answer "How have chocolate bar ratings for chocolates originating from different Latin American countries changed over time, and how is this impacted by cocoa percentage?", we will first need to visualize the relationship between `rating` and `country_of_bean_origin`. Since there are many distinct `country_of_bean_origin` values in the dataset, we will not be able to fully visualize the relationship for each country. To choose the countries we wanted to analyze, we referenced statistics from the [International Cocoa Organization](https://scioteca.caf.com/bitstream/handle/123456789/892/3.%20Propuesta%20de%20valor%20ILAC-%20Ing.pdf?sequence=17&isAllowed=y) in 2015. As publicized by the Development Bank of Latin America, 81% of the market share for fine aroma cocoa is owned by Latin America, with the top four countries of production being Ecuador, Dominican Republic, Peru, and Venezuela. We will use these four countries to answer our question. Once we have our countries, we will manipulate our dataset so that we have an average chocolate bar rating for each year for each country of analysis. We will then use a `geom_line` with year on the x-axis and average rating on the y-axis. Our second visualization will introduce `cocoa_percent`, examining its relationship with `rating` for each country of analysis. We will experiment with different plot formats to see what is the most informative visualization (for example, some options would be faceting by `country_of_bean_origin` or keeping them all on the same plot.) The type of plot for this question would be a scatterplot using  `geom_point`, with cocoa percentage on the x-axis and rating on the y-axis.
+
+### Question 2
+
+To answer "How has the count and type of ingredients in chocolate bars affected their  ratings over time?", we will first need to create new dummy variables indicating whether each chocolate bar contains each of the seven listed ingredients in the data set. These will be binary variables, with cells containing "1" if the bar has the ingredient and "0" otherwise. Our first visualization will examine the distributions of chocolate bar rating for each possible amount of ingredients, ranging from 1 to 7. We will do this by creating a ridge plot using `geom_density_ridges`, with possible numbers of ingredients on the y-axis and rating on the x-axis. Our second visualization will visualize the relationship between `rating` and time (`review_date`) for each ingredient. We will experiment with different plot formats to see what is the most informative visualization (for example, some options would be creating separate plots for each ingredient or keeping them all on the same plot.) We will manipulate our dataset so that we have an average chocolate bar rating for each year for each ingredient. We plan on using the `geom_line` function in ggplot to achieve the appropriate display, with year on the x-axis and average rating on the y-axis.
+
+
