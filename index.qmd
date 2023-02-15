@@ -23,7 +23,9 @@ chocolate <- readr::read_csv("data/chocolate.csv")
 
 ## Introduction
 
-(1-2 paragraphs): Brief introduction to the dataset. You may repeat some of the information about the dataset provided in the introduction to the dataset on the TidyTuesday repository, paraphrasing on your own terms. Imagine that your project is a standalone document and the grader has no prior knowledge of the dataset.
+For our first project, our team decided to analyze the Chocolate Bar Ratings data set, which comes from the "Flavors of Cacao" database provided by Georgios and Kelsey (two contributors to the TidyTuesday repository). Since chocolate is such a ubiquitous substance in America, our team decided to use this dataset because we were mildly interested in learning more about chocolate and the details about where its produced and how the different ingredients affect its perceived review.
+
+Within the dataset, there are categorical variables such as ingredients and the country of bean origin, and there are numerical variables such as the cocoa percentage and the review score rating of the chocolate. The review scores of the chocolate are on a scale of 1.0 to 5.0 and combine a mixture of both objective and subjective factors. By the end of this project, our team will have used a combination of these variables to create visualizations that reveal more about the intricacies of chocolate production and review.
 
 ## Question 1: Title that relates to the question you're answering
 
