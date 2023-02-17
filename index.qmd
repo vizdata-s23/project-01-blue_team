@@ -1,9 +1,11 @@
 ---
-title: "Project title"
+title: "What makes a good chocolate bar?"
 subtitle: "STA/ISS 313 - Project 1"
-author: "Blue Team"
+author: "The Blue Team: Ryan Mitchell, Luke Thomas, Jason Yang"
 format: html
 editor: visual
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -11,6 +13,7 @@ editor: visual
 #| message: false
 
 library(tidyverse)
+library(ggridges)
 
 chocolate <- readr::read_csv("data/chocolate.csv")
 ```
@@ -27,7 +30,7 @@ For our first project, our team decided to analyze the Chocolate Bar Ratings dat
 
 Within the dataset, there are categorical variables such as ingredients and the country of bean origin, and there are numerical variables such as the cocoa percentage and the review score rating of the chocolate. The review scores of the chocolate are on a scale of 1.0 to 5.0 and combine a mixture of both objective and subjective factors. By the end of this project, our team will have used a combination of these variables to create visualizations that reveal more about the intricacies of chocolate production and review.
 
-## Question 1: Title that relates to the question you're answering
+## Question 1: Where is the best chocolate produced?
 
 ### Introduction
 
@@ -41,11 +44,54 @@ Within the dataset, there are categorical variables such as ingredients and the 
 
 (2-3 code blocks, 2 figures, text/code comments as needed): In this section, provide the code that generates your plots. Use scale functions to provide nice axis labels and guides. You are welcome to use theme functions to customize the appearance of your plot, but you are not required to do so. All plots must be made with **ggplot2**. Do not use base R or lattice plotting functions.
 
+```{r q1-viz1-data}
+q1_viz1 <- chocolate |>
+  filter(country_of_bean_origin %in%
+           c("Ecuador", "Dominican Republic", "Peru", "Venezuela")) |>
+  group_by(country_of_bean_origin, review_date) |>
+  mutate(avg_rating = mean(rating)) |>
+  select(country_of_bean_origin, review_date, avg_rating) |>
+  ungroup() |>
+  distinct()
+```
+
+```{r q1-viz-plot}
+ggplot(q1_viz1, aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(breaks = seq(2006, 2021, 3)) +
+  labs(title = "Chocolate Bar Ratings Over Time",
+       subtitle = "By Country of Cocoa Bean Origin",
+       x = "Review Year",
+       y = "Average Rating (From 1 to 4)",
+       color = "Country of Bean Origin") +
+  theme_minimal()
+```
+
+```{r q1-viz2-data}
+q1_viz2 <- chocolate |>
+  filter(country_of_bean_origin %in%
+           c("Ecuador", "Dominican Republic", "Peru", "Venezuela")) |>
+  mutate(cocoa_percent = as.numeric(gsub("%", "", cocoa_percent)))
+```
+
+```{r q1-viz2-plot}
+ggplot(q1_viz2, aes(x = cocoa_percent,
+                    y = rating,
+                    color = country_of_bean_origin)) +
+  facet_wrap(~country_of_bean_origin) +
+  geom_point(show.legend = FALSE) +
+  geom_smooth(method = "lm") +
+  theme_minimal()
+```
+
 ### Discussion
 
 (1-3 paragraphs): In the Discussion section, interpret the results of your analysis. Identify any trends revealed (or not revealed) by the plots. Speculate about why the data looks the way it does.
 
-## Question 2: Chocolate Bar Ingredient Analysis
+## Question 2: What does the best chocolate contain?
 
 ### Introduction
 
@@ -60,6 +106,28 @@ For this question, we are interested in exploring some of the main ingredients p
 ### Analysis
 
 (2-3 code blocks, 2 figures, text/code comments as needed): In this section, provide the code that generates your plots. Use scale functions to provide nice axis labels and guides. You are welcome to use theme functions to customize the appearance of your plot, but you are not required to do so. All plots must be made with **ggplot2**. Do not use base R or lattice plotting functions.
+
+```{r q2-viz1-data}
+q2_viz1 <- chocolate |>
+  mutate(num_ingredients = as.factor(substr(ingredients, 1, 1)),
+         sweeteners = if_else(grepl("S\\*", chocolate$ingredients), 1, 0)) |>
+  drop_na(ingredients)
+```
+
+```{r q2-viz1-plot}
+ggplot(q2_viz1, aes(x = rating, y = num_ingredients)) +
+  geom_density_ridges() +
+  stat_density_ridges(
+    geom = "density_ridges_gradient", calc_ecdf = TRUE,
+    quantiles = 4, quantile_lines = TRUE
+  )
+```
+
+
+
+
+
+
 
 ```{r}
 #| label: ingredient-number-viz
