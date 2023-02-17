@@ -14,8 +14,10 @@ editor_options:
 
 library(tidyverse)
 library(ggridges)
+library(plotly)
 
 chocolate <- readr::read_csv("data/chocolate.csv")
+color_scheme <- c("#A78B71", "#F7C815", "#EC9704", "#9C4A1A")
 ```
 
 ## Abstract
@@ -55,20 +57,35 @@ q1_viz1 <- chocolate |>
   distinct()
 ```
 
-```{r q1-viz-plot}
-ggplot(q1_viz1, aes(x = review_date,
+```{r q1-viz1-plot}
+q1_plot1 <- ggplot(q1_viz1, aes(x = review_date,
                     y = avg_rating,
                     color = country_of_bean_origin)) +
   geom_line() +
-  geom_point() +
+  geom_point(aes(text = paste(
+                      "Country:", country_of_bean_origin,
+                      "\nReview Year:", review_date,
+                      "\nAverage Rating:", round(avg_rating, 2)
+                    ))) +
   scale_x_continuous(breaks = seq(2006, 2021, 3)) +
-  labs(title = "Chocolate Bar Ratings Over Time",
-       subtitle = "By Country of Cocoa Bean Origin",
-       x = "Review Year",
+  scale_color_manual(values = color_scheme) +
+  labs(x = "Review Year",
        y = "Average Rating (From 1 to 4)",
        color = "Country of Bean Origin") +
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = "bottom")
+ggplotly(q1_plot1, tooltip = "text") |>
+  layout(title = list(text = paste0("Chocolate Bar Ratings Over Time",
+                                    "<br>",
+                                    "<sup>",
+                                    "By Country of Cocoa Bean Origin",
+                                    "</sup>")),
+         legend = list(orientation = "h", y = -0.2))
 ```
+
+[customize plotly tooltip](https://gist.github.com/matt-dray/8e5d03e32318da90ee53cd35d81871c0)
+[plotly titles](https://datascott.com/blog/subtitles-with-ggplotly/)
+[legend position ggplotly](https://github.com/plotly/plotly.R/issues/1049)
 
 ```{r q1-viz2-data}
 q1_viz2 <- chocolate |>
@@ -86,6 +103,7 @@ ggplot(q1_viz2, aes(x = cocoa_percent,
   geom_smooth(method = "lm") +
   theme_minimal()
 ```
+
 
 ### Discussion
 
@@ -123,10 +141,37 @@ ggplot(q2_viz1, aes(x = rating, y = num_ingredients)) +
   )
 ```
 
+```{r q2-viz2-data}
+q2_viz2 <- chocolate |>
+  mutate(has_beans = if_else(grepl("B", chocolate$ingredients), 1, 0),
+         has_sugar = if_else(grepl("S$", chocolate$ingredients) |
+                         grepl("S,", chocolate$ingredients), 1, 0),
+         has_sweetener = if_else(grepl("S\\*", chocolate$ingredients), 1, 0),
+         has_cocoa_butter = if_else(grepl("C", chocolate$ingredients), 1, 0),
+         has_vanilla = if_else(grepl("V", chocolate$ingredients), 1, 0),
+         has_lecithin = if_else(grepl("L", chocolate$ingredients), 1, 0),
+         has_salt = if_else(grepl("Sa", chocolate$ingredients), 1, 0)) |>
+  select(rating, review_date, starts_with("has")) |>
+  pivot_longer(cols = starts_with("has"),
+               names_to = "ingredient",
+               values_to = "contains") |>
+  filter(contains == 1) |>
+  mutate(ingredient = substr(ingredient, 5, 20)) |>
+  group_by(ingredient, review_date) |>
+  mutate(avg_rating = mean(rating)) |>
+  select(ingredient, review_date, avg_rating) |>
+  ungroup() |>
+  distinct()
+```
 
-
-
-
+```{r q2-viz2-plot}
+q2_plot2 <-ggplot(q2_viz2,
+                  aes(x = review_date, y = avg_rating, color = ingredient)) +
+  geom_line(show.legend = FALSE) +
+  geom_point(show.legend = FALSE) +
+  theme_minimal()
+ggplotly(q2_plot2)
+```
 
 
 ```{r}
