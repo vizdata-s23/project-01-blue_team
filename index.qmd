@@ -38,9 +38,15 @@ Within the dataset, there are categorical variables such as ingredients and the 
 
 (1-2 paragraphs): Introduction to the question and what parts of the dataset are necessary to answer the question. Also discuss why you're interested in this question.
 
+For this question, we specifically want to explore how chocolate bar ratings for bars originating from different countries impacted by factors like time and cocoa percentage. While dozens of countries are represented in the data, we referenced statistics from the International Cocoa Organization to find that 81% of the market share for fine aroma cocoa is owned by Latin America, with the top four countries of production being Ecuador, Dominican Republic, Peru, and Venezuela. We will use these four countries to answer our question, as identified in the \`country_of_bean_origin\` variable. Additionally, we will make use of the 'review_date', 'cocoa_percent', and 'rating' variables. We are interested in this question because many chocolate bars boast their country of origin on the wrapper, and we would love to know which is frequently associated with the highest rated chocolate!
+
 ### Approach
 
 (1-2 paragraphs): Describe what types of plots you are going to make to address your question. For each plot, provide a clear explanation as to why this plot (e.g. boxplot, barplot, histogram, etc.) is best for providing the information you are asking about. The two plots should be of different types, and at least one of the two plots needs to use either color mapping or facets.
+
+To visualize the chocolate bar ratings over time for the four countries in question, we have chosen to calculate the mean rating for each country for each year in the data (2006-2021), then produce a single line plot with color mapping. The line plot offers an intuitive way to visualize an effect over time, with the year on the x-axis, to see how ratings have changed over the 15-year period. Additionally, using a single line plot with color mapping allows for easy comparison across the four countries, and it would not make as much sense to facet four different plots, each with a single line.
+
+To visualize the effect of cocoa percentage on chocolate bar ratings for the four countries, we decided to produce scatter plots of rating vs. cocoa percentage, faceted by the country of origin. Additionally, a line of best fit has been added to each plot to visualize the overall trend for each country. In this instance, we opted for a scatter plot, since the continuous nature of the cocoa percentage variable did not facilitate the use of a summary statistic, and binning the variable was not effective due to the inconsistent number of observations for different cocoa percentage ranges. The line of best fit allows the viewer to easily identify the trend for each country, and the plot was faceted rather than color mapped or shape mapped on a single plot because the cluttered nature of the scatter plot would be difficult to interpret on a single plot with this many observations.
 
 ### Analysis
 
@@ -83,9 +89,7 @@ ggplotly(q1_plot1, tooltip = "text") |>
          legend = list(orientation = "h", y = -0.2))
 ```
 
-[customize plotly tooltip](https://gist.github.com/matt-dray/8e5d03e32318da90ee53cd35d81871c0)
-[plotly titles](https://datascott.com/blog/subtitles-with-ggplotly/)
-[legend position ggplotly](https://github.com/plotly/plotly.R/issues/1049)
+[customize plotly tooltip](https://gist.github.com/matt-dray/8e5d03e32318da90ee53cd35d81871c0) [plotly titles](https://datascott.com/blog/subtitles-with-ggplotly/) [legend position ggplotly](https://github.com/plotly/plotly.R/issues/1049)
 
 ```{r q1-viz2-data}
 q1_viz2 <- chocolate |>
@@ -103,7 +107,6 @@ ggplot(q1_viz2, aes(x = cocoa_percent,
   geom_smooth(method = "lm") +
   theme_minimal()
 ```
-
 
 ### Discussion
 
@@ -172,7 +175,6 @@ q2_plot2 <-ggplot(q2_viz2,
   theme_minimal()
 ggplotly(q2_plot2)
 ```
-
 
 ```{r}
 #| label: ingredient-number-viz
