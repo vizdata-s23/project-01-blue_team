@@ -15,6 +15,7 @@ editor_options:
 library(tidyverse)
 library(ggridges)
 library(plotly)
+library(patchwork)
 
 chocolate <- readr::read_csv("data/chocolate.csv")
 color_scheme <- c("#A78B71", "#F7C815", "#EC9704", "#9C4A1A")
@@ -64,32 +65,147 @@ q1_viz1 <- chocolate |>
 ```
 
 ```{r q1-viz1-plot}
-q1_plot1 <- ggplot(q1_viz1, aes(x = review_date,
+q1_DR <- ggplot(q1_viz1,
+                aes(x = review_date,
                     y = avg_rating,
                     color = country_of_bean_origin)) +
-  geom_line() +
-  geom_point(aes(text = paste(
-                      "Country:", country_of_bean_origin,
-                      "\nReview Year:", review_date,
-                      "\nAverage Rating:", round(avg_rating, 2)
-                    ))) +
-  scale_x_continuous(breaks = seq(2006, 2021, 3)) +
+  geom_line(alpha = 0.2) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.2) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
   scale_color_manual(values = color_scheme) +
-  labs(x = "Review Year",
-       y = "Average Rating (From 1 to 4)",
-       color = "Country of Bean Origin") +
+  labs(title = "Dominican Republic") +
   theme_minimal() +
-  theme(legend.position = "bottom")
-ggplotly(q1_plot1, tooltip = "text") |>
-  layout(title = list(text = paste0("Chocolate Bar Ratings Over Time",
-                                    "<br>",
-                                    "<sup>",
-                                    "By Country of Cocoa Bean Origin",
-                                    "</sup>")),
-         legend = list(orientation = "h", y = -0.2))
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+
+q1_EC <- ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.2) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Ecuador"),
+    color = color_scheme[2],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.2) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Ecuador"),
+    color = color_scheme[2],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Ecuador") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+
+q1_PE <- ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.2) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Peru"),
+    color = color_scheme[3],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.2) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Peru"),
+    color = color_scheme[3],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Peru") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none"
+  )
+
+q1_VE <- ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.2) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Venezuela"),
+    color = color_scheme[4],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.2) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Venezuela"),
+    color = color_scheme[4],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Venezuela") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none"
+  )
+
+(q1_DR + q1_EC + q1_PE + q1_VE) +
+  plot_layout(ncol = 2) +
+  plot_annotation(
+    title = "Chocolate Bar Ratings Over Time",
+    subtitle = "By Country of Cocoa Bean Origin",
+    theme = theme(
+      plot.title = element_text(hjust = 0.5,
+                                face = "bold"),
+      plot.subtitle = element_text(hjust = 0.5,
+                                   face = "bold")
+    )
+  ) &
+  theme(panel.background = element_rect(
+    fill = NA,
+    color  = 'black',
+    linewidth = 1
+  ))
 ```
 
-[customize plotly tooltip](https://gist.github.com/matt-dray/8e5d03e32318da90ee53cd35d81871c0) [plotly titles](https://datascott.com/blog/subtitles-with-ggplotly/) [legend position ggplotly](https://github.com/plotly/plotly.R/issues/1049)
 
 ```{r q1-viz2-data}
 q1_viz2 <- chocolate |>
