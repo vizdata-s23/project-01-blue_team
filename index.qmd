@@ -8,17 +8,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r}
-#| label: packages-and-data
-#| message: false
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE) 
+                      #warning = FALSE, 
+                      #message = FALSE)
+```
 
+```{r packages-and-data, message = FALSE}
 library(tidyverse)
 library(ggridges)
 library(plotly)
 library(patchwork)
 
 chocolate <- readr::read_csv("data/chocolate.csv")
-color_scheme <- c("#A78B71", "#F7C815", "#EC9704", "#9C4A1A")
+color_scheme <- c("#A78B71", "#D4AF37", "#EC9704", "#9C4A1A")
 ```
 
 ## Abstract
@@ -85,13 +88,14 @@ q1_DR <- ggplot(q1_viz1,
   ) +
   scale_x_continuous(breaks = seq(2006, 2021, 5)) +
   scale_color_manual(values = color_scheme) +
-  labs(title = "Dominican Republic") +
+  labs(title = "Dominican Republic",
+       y = "Avg Rating (Out of 4)") +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 10),
     axis.line = element_blank(),
     axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
+    axis.title.y = element_text(hjust = -6.2),
     legend.position = "none"
   )
 
@@ -147,11 +151,13 @@ q1_PE <- ggplot(q1_viz1,
   ) +
   scale_x_continuous(breaks = seq(2006, 2021, 5)) +
   scale_color_manual(values = color_scheme) +
-  labs(title = "Peru") +
+  labs(title = "Peru",
+       x = "Review Year") +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 10),
     axis.line = element_blank(),
+    axis.title.x = element_text(hjust = 1.22), 
     axis.title = element_blank(),
     legend.position = "none"
   )
@@ -206,22 +212,42 @@ q1_VE <- ggplot(q1_viz1,
   ))
 ```
 
-
 ```{r q1-viz2-data}
 q1_viz2 <- chocolate |>
   filter(country_of_bean_origin %in%
            c("Ecuador", "Dominican Republic", "Peru", "Venezuela")) |>
-  mutate(cocoa_percent = as.numeric(gsub("%", "", cocoa_percent)))
+  mutate(cocoa_percent = as.numeric(gsub("%", "", cocoa_percent)),
+         cocoa_grp = if_else(cocoa_percent <= 70, "\u2264 70%", "> 70%")) |>
+  group_by(country_of_bean_origin, cocoa_grp) |>
+  mutate(avg_rating = mean(rating)) |>
+  select(country_of_bean_origin, cocoa_grp, avg_rating) |>
+  ungroup() |>
+  distinct()
 ```
 
 ```{r q1-viz2-plot}
-ggplot(q1_viz2, aes(x = cocoa_percent,
-                    y = rating,
+ggplot(q1_viz2, aes(x = fct_rev(cocoa_grp),
+                    y = avg_rating,
                     color = country_of_bean_origin)) +
-  facet_wrap(~country_of_bean_origin) +
-  geom_point(show.legend = FALSE) +
-  geom_smooth(method = "lm") +
-  theme_minimal()
+  facet_wrap(~country_of_bean_origin, ncol = 4) +
+  geom_col(fill = "white") +
+  geom_text(aes(label = round(avg_rating, 2), vjust = -0.5),
+            fontface = "bold") +
+  coord_cartesian(ylim = c(2.8, 3.4)) +
+  labs(title = "Chocolate Bar Ratings By Cocoa Percentage",
+       subtitle = "By Country of Cocoa Bean Origin",
+       x = "Cocoa Percentage",
+       y = "Avg Rating (Out of 4)") +
+  scale_color_manual(values = color_scheme) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(hjust = 0.5,
+                                face = "bold"),
+        plot.subtitle = element_text(hjust = 0.5,
+                                   face = "bold"),
+        strip.text.x = element_text(face = "italic"
+        ),
+        panel.border = element_rect(color = "black", fill = NA, size = 1))
 ```
 
 ### Discussion
