@@ -66,47 +66,6 @@ q1_viz1 <- chocolate |>
   ungroup() |>
   distinct()
 
-ggplot(q1_viz1,
-                aes(x = review_date,
-                    y = avg_rating,
-                    color = country_of_bean_origin)) +
-  geom_line(alpha = 0.1) +
-  geom_line(
-    data = q1_viz1 |>
-      filter(country_of_bean_origin == "Dominican Republic"),
-    color = color_scheme[1],
-    linewidth = 1.4
-  ) +
-  geom_point(alpha = 0.1) +
-  geom_point(
-    data = q1_viz1 |>
-      filter(country_of_bean_origin == "Dominican Republic"),
-    color = color_scheme[1],
-    size = 2
-  ) +
-  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
-  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
-  scale_color_manual(values = color_scheme) +
-  labs(title = "Chocolate Bar Ratings Over Time",
-       subtitle = "Dominican Republic",
-       y = "Avg Rating (Out of 4)",
-       x = "Review Year") +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
-    legend.position = "none",
-    panel.background = element_rect(
-      fill = NA,
-      linewidth = 1,
-      color = "black"
-    )
-  )
-```
-
-##  {style="text-align: center"}
-
-```{r q1-slide2}
 q1_DR <- ggplot(q1_viz1,
                 aes(x = review_date,
                     y = avg_rating,
@@ -278,9 +237,173 @@ q1_YLAB + (q1_DR + q1_EC + q1_PE + q1_VE) +
 # Shared y-axis across patchwork plots: https://stackoverflow.com/questions/65291723/merging-two-y-axes-titles-in-patchwork
 ```
 
-## Lower Cocoa, Higher Rating {style="text-align: center; color: brown"}
+##  {style="text-align: center"}
+
+```{r q1-slide2}
+ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Chocolate Bar Ratings Over Time",
+       subtitle = "Dominican Republic",
+       y = "Avg Rating (Out of 4)",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
+```
+
+## 
 
 ```{r q1-slide3}
+ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Ecuador"),
+    color = color_scheme[2],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Ecuador"),
+    color = color_scheme[2],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Chocolate Bar Ratings Over Time",
+       subtitle = "Ecuador",
+       y = "Avg Rating (Out of 4)",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
+```
+
+## 
+
+```{r q1-slide4}
+ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Peru"),
+    color = color_scheme[3],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Peru"),
+    color = color_scheme[3],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Chocolate Bar Ratings Over Time",
+       subtitle = "Peru",
+       y = "Avg Rating (Out of 4)",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
+```
+
+## 
+
+```{r q1-slide5}
+ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Venezuela"),
+    color = color_scheme[4],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Venezuela"),
+    color = color_scheme[4],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Chocolate Bar Ratings Over Time",
+       subtitle = "Venezuela",
+       y = "Avg Rating (Out of 4)",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
+```
+
+## Lower Cocoa, Higher Rating {style="text-align: center; color: brown"}
+
+```{r q1-slide6}
 q1_viz2 <- chocolate |>
   filter(country_of_bean_origin %in%
            c("Ecuador", "Dominican Republic", "Peru", "Venezuela")) |>
@@ -443,21 +566,21 @@ ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
   geom_line(alpha = 0.1) +
   geom_line(
     data = q2_viz2 |>
-      filter(ingredient == "beans"),
-    color = color_scheme[1],
+      filter(ingredient %in% c("beans", "cocoa_butter", "sugar")),
+    aes(color = ingredient),
     linewidth = 1.4
   ) +
   geom_point(alpha = 0.1) +
   geom_point(
     data = q2_viz2 |>
-      filter(ingredient == "beans"),
-    color = color_scheme[1],
+      filter(ingredient %in% c("beans", "cocoa_butter", "sugar")),
+    aes(color = ingredient),
     size = 2
   ) +
   scale_color_manual(values = c(color_scheme, "#AA0A27")) +
   scale_x_continuous(breaks = seq(2006, 2021, 5)) +
   scale_y_continuous(breaks = seq(2.75, 3.75, 0.5)) +
-  labs(subtitle = "Beans",
+  labs(subtitle = "Beans, Sugar, and Cocoa Butter",
        title = "Chocolate Bar Ratings by
 Presence of Ingredient",
        y = "Avg Rating (Out of 4)",
@@ -466,7 +589,7 @@ Presence of Ingredient",
   theme(
     legend.position = "none",
     plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
     axis.text = element_text(size = 8),
   )
 ```
@@ -618,14 +741,7 @@ q2_VANILLA <- ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
     axis.text = element_text(size = 8)
   )
 
-layout <- "
-AABB
-CCDD
-#EE#
-"
-
-q2_BEANS + q2_BUTTER + q2_LEC + q2_SUGAR + q2_VANILLA +
-  plot_layout(design = layout) +
+q2_LEC / q2_VANILLA +
   plot_annotation(
     title = "Chocolate Bar Ratings Over Time",
     subtitle = "By Presence of Ingredient",
