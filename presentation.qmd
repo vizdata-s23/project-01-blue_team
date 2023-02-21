@@ -1,12 +1,15 @@
 ---
-title: "Project title"
+title: "What makes a good chocolate bar?"
 subtitle: "STA/ISS 313 - Spring 2023 - Project 1"
-author: "Team Name"
+author: "The Blue Team: Ryan Mitchell, Luke Thomas, Jason Yang"
 title-slide-attributes:
-  data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
+  data-background-image: images/chocolate_bg.jpg
   data-background-size: stretch
   data-slide-number: none
-format: revealjs
+  
+format:
+  revealjs:
+    theme: beige
 editor: visual
 execute:
   echo: false
@@ -22,6 +25,8 @@ library(tidyverse)
 library(tidymodels)
 library(palmerpenguins)
 library(gt)
+library(patchwork)
+library(ggridges)
 ```
 
 ```{r}
@@ -43,144 +48,422 @@ knitr::opts_chunk$set(
 #| include: false
 
 # Load your data here
+chocolate <- readr::read_csv("data/chocolate.csv")
+color_scheme <- c("#A78B71", "#D4AF37", "#EC9704", "#9C4A1A")
 ```
 
-# Using Quarto for presentations
+# Where is the best chocolate produced? {style="text-align: center"}
 
-## Quarto
+## Impact of *Time* {style="text-align: center; color: brown"}
 
--   The presentation is created using the Quarto CLI
+```{r q1-slide1}
+q1_viz1 <- chocolate |>
+  filter(country_of_bean_origin %in%
+           c("Ecuador", "Dominican Republic", "Peru", "Venezuela")) |>
+  group_by(country_of_bean_origin, review_date) |>
+  mutate(avg_rating = mean(rating)) |>
+  select(country_of_bean_origin, review_date, avg_rating) |>
+  ungroup() |>
+  distinct()
 
--   `##` sets the start of a new slide
-
-## Layouts
-
-You can use plain text
-
--   or bullet points
-
-::: columns
-::: {.column width="50%"}
-or text in two columns $^*$
-:::
-
-::: {.column width="50%"}
--   like
--   this
-:::
-:::
-
-### 
-
-::: aside
-\[\*\] And add footnotes
-:::
-
-## Code
-
-```{r}
-#| label: boring-regression
-
-# a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
-```
-
-## Plots
-
-```{r}
-#| label: recode-species
-#| echo: false
-
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-
-penguins_modified <- penguins %>%
-  mutate(species = fct_other(species, keep = "Adelie"))
-```
-
-```{r}
-#| label: plot-penguins
-#| echo: false
-#| warning: false
-#| fig-alt: |
-#|   Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all 
-#|   the others combined together. There is a relatively strong, positive 
-#|   relationship between the two variables. The Adelie penguins are clustered 
-#|   together but they don't exhibit a different trend than the rest of the 
-#|   penguins.
-
-# Uses modified penguins dataset from previous chunk
-# Play around with height and width until you're happy with the look
-
-ggplot(
-  penguins_modified, 
-  aes(x = flipper_length_mm, y = body_mass_g, color = species)
+ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    linewidth = 1.4
   ) +
-  geom_point() + 
-  theme_minimal()
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Chocolate Bar Ratings Over Time",
+       subtitle = "Dominican Republic",
+       y = "Avg Rating (Out of 4)",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
 ```
 
-## Plot and text
+##  {style="text-align: center"}
 
-::: columns
-::: {.column width="50%"}
--   Some text
--   goes here
-:::
+```{r q1-slide2}
+q1_DR <- ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Dominican Republic"),
+    color = color_scheme[1],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Dominican Republic",
+       y = "Avg Rating (Out of 4)") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
 
-::: {.column width="50%"}
-```{r}
-#| warning: false
-#| out-width: "100%"
-#| fig-width: 4
-#| echo: false
+q1_EC <- ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Ecuador"),
+    color = color_scheme[2],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Ecuador"),
+    color = color_scheme[2],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Ecuador") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
 
-# See how I changed out-width and fig-width from defaults
-# to make the figure bigger
+q1_PE <- ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Peru"),
+    color = color_scheme[3],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Peru"),
+    color = color_scheme[3],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Peru",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.title.x = element_text(hjust = 1.22),
+    axis.title = element_blank(),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
 
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot() +
-  theme_minimal()
+q1_VE <- ggplot(q1_viz1,
+                aes(x = review_date,
+                    y = avg_rating,
+                    color = country_of_bean_origin)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Venezuela"),
+    color = color_scheme[4],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q1_viz1 |>
+      filter(country_of_bean_origin == "Venezuela"),
+    color = color_scheme[4],
+    size = 2
+  ) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
+  scale_color_manual(values = color_scheme) +
+  labs(title = "Venezuela") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.line = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+    panel.background = element_rect(
+      fill = NA,
+      linewidth = 1,
+      color = "black"
+    )
+  )
+
+q1_YLAB <-
+  ggplot(data.frame(l = "Avg Rating (Out of 4)", x = 1, y = 1)) +
+  geom_text(aes(x, y, label = l), angle = 90) +
+  theme_void() +
+  coord_cartesian(clip = "off")
+
+q1_YLAB + (q1_DR + q1_EC + q1_PE + q1_VE) +
+  plot_layout(ncol = 2, widths = c(1, 25)) +
+  plot_annotation(
+    title = "Chocolate Bar Ratings Over Time",
+    subtitle = "By Country of Cocoa Bean Origin",
+    theme = theme(
+      plot.title = element_text(hjust = 0.55,
+                                face = "bold"),
+      plot.subtitle = element_text(hjust = 0.55,
+                                   face = "bold")
+    )
+  )
+
+# Shared y-axis across patchwork plots: https://stackoverflow.com/questions/65291723/merging-two-y-axes-titles-in-patchwork
 ```
-:::
-:::
 
-# A new section...
+## Lower Cocoa, Higher Rating {style="text-align: center; color: brown"}
 
-## Tables
+```{r q1-slide3}
+q1_viz2 <- chocolate |>
+  filter(country_of_bean_origin %in%
+           c("Ecuador", "Dominican Republic", "Peru", "Venezuela")) |>
+  mutate(
+    cocoa_percent = as.numeric(gsub("%", "", cocoa_percent)),
+    cocoa_grp = if_else(cocoa_percent <= 70, "\u2264 70%", "> 70%")
+  ) |>
+  group_by(country_of_bean_origin, cocoa_grp) |>
+  mutate(avg_rating = mean(rating)) |>
+  select(country_of_bean_origin, cocoa_grp, avg_rating) |>
+  ungroup() |>
+  distinct()
 
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+ggplot(q1_viz2,
+       aes(
+         x = fct_rev(cocoa_grp),
+         y = avg_rating,
+         color = country_of_bean_origin
+       )) +
+  facet_wrap( ~ country_of_bean_origin, ncol = 4) +
+  geom_col(fill = "white") +
+  geom_text(aes(label = round(avg_rating, 2), vjust = -0.5),
+            fontface = "bold") +
+  coord_cartesian(ylim = c(2.8, 3.4)) +
+  labs(
+    title = "Chocolate Bar Ratings By Cocoa Percentage",
+    subtitle = "By Country of Cocoa Bean Origin",
+    x = "Cocoa Percentage",
+    y = "Avg Rating (Out of 4)"
+  ) +
+  scale_color_manual(values = color_scheme) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5,
+                              face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5,
+                                 face = "bold"),
+    strip.text.x = element_text(face = "italic"),
+    panel.border = element_rect(
+      color = "black",
+      fill = NA,
+      size = 1
+    )
+  )
 
-```{r}
-#| label: penguins-table
-
-gt(head(penguins))
+# geom_col data labels: https://stackoverflow.com/questions/49718365/adding-data-labels-above-geom-col-chart-with-ggplot2
 ```
 
-## Images
+# What does the best chocolate contain? {style="text-align: center"}
 
-![Image credit: Danielle Navarro, Percolate.](images/watercolour_sys02_img34_teacup-ocean.png)
+## Sometimes, Less is More {style="text-align: center; color: brown"}
 
-## Math Expressions {.smaller}
+```{r q2-slide1}
+q2_viz1 <- chocolate |>
+  mutate(
+    num_ingredients = as.numeric(substr(ingredients, 1, 1)),
+    num_ingredients = case_when(
+      num_ingredients <= 2 ~ "\u2264 2 Ingredients",
+      num_ingredients == 3 ~ "3 Ingredients",
+      num_ingredients == 4 ~ "4 Ingredients",
+      num_ingredients >= 5 ~ "\u2265 5 Ingredients"
+    ),
+    num_ingredients = factor(
+      num_ingredients,
+      levels = c("\u2264 2 Ingredients",
+                 "3 Ingredients",
+                 "4 Ingredients",
+                 "\u2265 5 Ingredients")),
+    sweeteners = if_else(
+      grepl("S\\*", chocolate$ingredients),
+      "Sweeteners",
+      "No Sweeteners"
+    )
+  ) |>
+  drop_na(ingredients)
 
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. \$\alpha+\beta\$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
+ggplot(q2_viz1, aes(
+  x = rating,
+  y = num_ingredients,
+  fill = factor(after_stat(quantile))
+)) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE,
+    quantiles = 4,
+    quantile_lines = TRUE
+  ) +
+  scale_fill_manual(values = color_scheme) +
+  scale_x_continuous(labels = c("", "★", "★★", "★★★", "★★★★")) +
+  labs(title = "Chocolate Bar Ratings by Number of Ingredients",
+       x = "Rating (Out of 4)") +
+  theme_ridges() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.3),
+    axis.title.y = element_blank(),
+  )
+```
 
-    $$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+## All Natural is the Answer {style="text-align: center; color: brown"}
 
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+```{r q2-slide2}
+ggplot(q2_viz1, aes(
+  x = rating,
+  y = sweeteners,
+  fill = factor(after_stat(quantile))
+)) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE,
+    quantiles = 4,
+    quantile_lines = TRUE
+  ) +
+  scale_fill_manual(values = c("#eccccc", "#f0e1e1", "#eeeeee", "#d0afaf")) +
+  scale_x_continuous(labels = c("", "★", "★★", "★★★", "★★★★")) +
+  labs(x = "Rating (Out of 4)",
+       title = "Chocolate Bar Ratings by
+Presence of Artificial Sweeteners") +
+  theme_ridges() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.3),
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(hjust = 0.5)
+  )
+```
 
-Limitations:
+## Specific Ingredients {style="text-align: center"}
 
-1.  The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
+```{r q2-slide3}
+q2_viz2 <- chocolate |>
+  mutate(
+    has_beans = if_else(grepl("B", chocolate$ingredients), 1, 0),
+    has_sugar = if_else(grepl("S$", chocolate$ingredients) |
+        grepl("S,", chocolate$ingredients), 1, 0),
+    has_sweetener = if_else(grepl("S\\*", chocolate$ingredients), 1, 0),
+    has_cocoa_butter = if_else(grepl("C", chocolate$ingredients), 1, 0),
+    has_vanilla = if_else(grepl("V", chocolate$ingredients), 1, 0),
+    has_lecithin = if_else(grepl("L", chocolate$ingredients), 1, 0),
+    has_salt = if_else(grepl("Sa", chocolate$ingredients), 1, 0)
+  ) |>
+  select(rating, review_date, starts_with("has")) |>
+  pivot_longer(cols = starts_with("has"),
+               names_to = "ingredient",
+               values_to = "contains") |>
+  filter(contains == 1) |>
+  mutate(ingredient = substr(ingredient, 5, 20)) |>
+  filter(ingredient != "salt" & ingredient != "sweetener") |>
+  group_by(ingredient, review_date) |>
+  mutate(avg_rating = mean(rating)) |>
+  select(ingredient, review_date, avg_rating) |>
+  ungroup() |>
+  distinct()
 
-2.  There should not be spaces after the opening `$` or before the closing `$`.
-
-# Wrap up
-
-## Feeling adventurous?
-
--   You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
-
--   But some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs.
+ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
+                                color = ingredient)) +
+  geom_line(alpha = 0.1) +
+  geom_line(
+    data = q2_viz2 |>
+      filter(ingredient == "beans"),
+    color = color_scheme[1],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.1) +
+  geom_point(
+    data = q2_viz2 |>
+      filter(ingredient == "beans"),
+    color = color_scheme[1],
+    size = 2
+  ) +
+  scale_color_manual(values = c(color_scheme, "#AA0A27")) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.75, 3.75, 0.5)) +
+  labs(subtitle = "Beans",
+       title = "Chocolate Bar Ratings by
+Presence of Ingredient",
+       y = "Avg Rating (Out of 4)",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5, size = 10),
+    axis.text = element_text(size = 8)
+  )
+```
