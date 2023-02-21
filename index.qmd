@@ -278,18 +278,78 @@ For this question, we are interested in exploring some of the main ingredients p
 
 ```{r q2-viz1-data}
 q2_viz1 <- chocolate |>
-  mutate(num_ingredients = as.factor(substr(ingredients, 1, 1)),
-         sweeteners = if_else(grepl("S\\*", chocolate$ingredients), 1, 0)) |>
+  mutate(
+    num_ingredients = as.numeric(substr(ingredients, 1, 1)),
+    num_ingredients = case_when(
+      num_ingredients <= 2 ~ "\u2264 2 Ingredients",
+      num_ingredients == 3 ~ "3 Ingredients",
+      num_ingredients == 4 ~ "4 Ingredients",
+      num_ingredients >= 5 ~ "\u2265 5 Ingredients"
+    ),
+    num_ingredients = factor(
+      num_ingredients,
+      levels = c("\u2264 2 Ingredients",
+                 "3 Ingredients",
+                 "4 Ingredients",
+                 "\u2265 5 Ingredients")),
+    sweeteners = if_else(
+      grepl("S\\*", chocolate$ingredients),
+      "Sweeteners",
+      "No Sweeteners"
+    )
+  ) |>
   drop_na(ingredients)
 ```
 
-```{r q2-viz1-plot}
-ggplot(q2_viz1, aes(x = rating, y = num_ingredients)) +
-  geom_density_ridges() +
+```{r q2-viz1-plot, fig.height = 9, fig.width = 7}
+q2_INGRED <- ggplot(q2_viz1, aes(
+  x = rating,
+  y = num_ingredients,
+  fill = factor(after_stat(quantile))
+)) +
   stat_density_ridges(
-    geom = "density_ridges_gradient", calc_ecdf = TRUE,
-    quantiles = 4, quantile_lines = TRUE
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE,
+    quantiles = 4,
+    quantile_lines = TRUE
+  ) +
+  scale_fill_manual(values = color_scheme) +
+  scale_x_continuous(labels = c("", "★", "★★", "★★★", "★★★★")) +
+  labs(title = "Chocolate Bar Ratings by Number of Ingredients
+and Presence of Artificial Sweeteners") +
+  theme_ridges() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank()
   )
+
+q2_SWEET <- ggplot(q2_viz1, aes(
+  x = rating,
+  y = sweeteners,
+  fill = factor(after_stat(quantile))
+)) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE,
+    quantiles = 4,
+    quantile_lines = TRUE
+  ) +
+  scale_fill_manual(values = c("#eccccc", "#f0e1e1", "#eeeeee", "#d0afaf")) +
+  scale_x_continuous(labels = c("", "★", "★★", "★★★", "★★★★")) +
+  labs(x = "Rating (Out of 4)") +
+  theme_ridges() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5),
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(hjust = 0.5)
+  )
+
+q2_INGRED / q2_SWEET +
+  plot_layout(heights = c(2, 1))
 ```
 
 ```{r q2-viz2-data}
