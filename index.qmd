@@ -5,7 +5,7 @@ author: "The Blue Team: Ryan Mitchell, Luke Thomas, Jason Yang"
 format: html
 editor: visual
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r setup, include = FALSE}
@@ -253,6 +253,12 @@ ggplot(q1_viz2, aes(x = fct_rev(cocoa_grp),
 ### Discussion
 
 (1-3 paragraphs): In the Discussion section, interpret the results of your analysis. Identify any trends revealed (or not revealed) by the plots. Speculate about why the data looks the way it does.
+
+The first visualization reveals that chocolate bars with beans from the four countries of origin (Dominican Republic, Ecaudor, Peru, Venezuela) all experienced decreases in their average chocolate ratings over the first few years in the plot, namely 2006 to 2008. This perhaps could be due to the global recession of 2008, which may have affected manufacturing/production quality and therefore decreased customer satisfaction of chocolate bars coming from these four countries at the time.
+
+After this stretch of 3-4 years from 2006, all four of these countries experience a rebound in chocolate bar ratings, with minor dips in the future years; however, none of these decreases in ratings parallel the dip around 2008, both in magnitude and length of the decreasing ratings, except in Venezuela and Peru. Venezuela was facing record-high inflation levels (800% at its peak) and this explosion in inflation roughly started in 2016, which would definitely affect the production and shipment of Venezuelan cocoa beans around the world. Peru is a nation facing great political turmoil, which can also be traced back to 2016. A nation facing political distress will suffer in terms of its GDP and exports, which could potentially reflect the considerable drop in average ratings chocolate bars made from Peruvian cocoa beans.
+
+The second visualization demonstrates that chocolate bars with beans originating from these four countries, regardless of which country, had higher average ratings if the cocoa percentage was below 70% as opposed to above 70%. This difference was the greatest in chocolate bars with beans originating from Venezuela, with a 0.18 average rating difference between the greater than 70% cocoa bars vs below 70% cocoa bars. This doesn't surprise our team, as a higher cocoa level gives the chocolate bar a harsher, more bitter taste, and people generally enjoy the sweeter kinds of chocolate candies. One statistic our team is interested in is even if most people generally like chocolate with lower cocoa percentage levels, how would the ratings differ if only people who liked dark chocolate (let's say greater than 70% cocoa percentage) rated the different greater than 70% cocoa chocolate bars from around the world? Our team would hypothesize that there may be a different trend there if we only analyzed that sentiment and not just the general average reviews of lighter vs darker chocolate bars.
 
 ## Question 2: What does the best chocolate contain?
 
