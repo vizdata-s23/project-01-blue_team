@@ -87,6 +87,7 @@ q1_DR <- ggplot(q1_viz1,
     size = 2
   ) +
   scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
   scale_color_manual(values = color_scheme) +
   labs(title = "Dominican Republic",
        y = "Avg Rating (Out of 4)") +
@@ -118,6 +119,7 @@ q1_EC <- ggplot(q1_viz1,
     size = 2
   ) +
   scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
   scale_color_manual(values = color_scheme) +
   labs(title = "Ecuador") +
   theme_minimal() +
@@ -150,6 +152,7 @@ q1_PE <- ggplot(q1_viz1,
     size = 2
   ) +
   scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
   scale_color_manual(values = color_scheme) +
   labs(title = "Peru",
        x = "Review Year") +
@@ -181,6 +184,7 @@ q1_VE <- ggplot(q1_viz1,
     size = 2
   ) +
   scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.8, 3.6, 0.4)) +
   scale_color_manual(values = color_scheme) +
   labs(title = "Venezuela") +
   theme_minimal() +
@@ -358,20 +362,23 @@ q2_INGRED / q2_SWEET +
 
 ```{r q2-viz2-data}
 q2_viz2 <- chocolate |>
-  mutate(has_beans = if_else(grepl("B", chocolate$ingredients), 1, 0),
-         has_sugar = if_else(grepl("S$", chocolate$ingredients) |
-                         grepl("S,", chocolate$ingredients), 1, 0),
-         has_sweetener = if_else(grepl("S\\*", chocolate$ingredients), 1, 0),
-         has_cocoa_butter = if_else(grepl("C", chocolate$ingredients), 1, 0),
-         has_vanilla = if_else(grepl("V", chocolate$ingredients), 1, 0),
-         has_lecithin = if_else(grepl("L", chocolate$ingredients), 1, 0),
-         has_salt = if_else(grepl("Sa", chocolate$ingredients), 1, 0)) |>
+  mutate(
+    has_beans = if_else(grepl("B", chocolate$ingredients), 1, 0),
+    has_sugar = if_else(grepl("S$", chocolate$ingredients) |
+        grepl("S,", chocolate$ingredients), 1, 0),
+    has_sweetener = if_else(grepl("S\\*", chocolate$ingredients), 1, 0),
+    has_cocoa_butter = if_else(grepl("C", chocolate$ingredients), 1, 0),
+    has_vanilla = if_else(grepl("V", chocolate$ingredients), 1, 0),
+    has_lecithin = if_else(grepl("L", chocolate$ingredients), 1, 0),
+    has_salt = if_else(grepl("Sa", chocolate$ingredients), 1, 0)
+  ) |>
   select(rating, review_date, starts_with("has")) |>
   pivot_longer(cols = starts_with("has"),
                names_to = "ingredient",
                values_to = "contains") |>
   filter(contains == 1) |>
   mutate(ingredient = substr(ingredient, 5, 20)) |>
+  filter(ingredient != "salt" & ingredient != "sweetener") |>
   group_by(ingredient, review_date) |>
   mutate(avg_rating = mean(rating)) |>
   select(ingredient, review_date, avg_rating) |>
@@ -379,13 +386,164 @@ q2_viz2 <- chocolate |>
   distinct()
 ```
 
-```{r q2-viz2-plot}
-q2_plot2 <-ggplot(q2_viz2,
-                  aes(x = review_date, y = avg_rating, color = ingredient)) +
-  geom_line(show.legend = FALSE) +
-  geom_point(show.legend = FALSE) +
-  theme_minimal()
-ggplotly(q2_plot2)
+```{r q2-viz2-plot, fig.height = 7, fig.width = 7}
+q2_BEANS <- ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
+                                color = ingredient)) +
+  geom_line(alpha = 0.15) +
+  geom_line(
+    data = q2_viz2 |>
+      filter(ingredient == "beans"),
+    color = color_scheme[1],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.15) +
+  geom_point(
+    data = q2_viz2 |>
+      filter(ingredient == "beans"),
+    color = color_scheme[1],
+    size = 2
+  ) +
+  scale_color_manual(values = c(color_scheme, "#AA0A27")) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.75, 3.75, 0.5)) +
+  labs(title = "Beans") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 10),
+        axis.text = element_text(size = 8))
+
+q2_BUTTER <- ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
+                                color = ingredient)) +
+  geom_line(alpha = 0.15) +
+  geom_line(
+    data = q2_viz2 |>
+      filter(ingredient == "cocoa_butter"),
+    color = color_scheme[2],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.15) +
+  geom_point(
+    data = q2_viz2 |>
+      filter(ingredient == "cocoa_butter"),
+    color = color_scheme[2],
+    size = 2
+  ) +
+  scale_color_manual(values = c(color_scheme, "#AA0A27")) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.75, 3.75, 0.5)) +
+  labs(title = "Cocoa Butter") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 10),
+        axis.text = element_text(size = 8),
+        axis.text.y = element_blank())
+
+q2_LEC <- ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
+                                color = ingredient)) +
+  geom_line(alpha = 0.15) +
+  geom_line(
+    data = q2_viz2 |>
+      filter(ingredient == "lecithin"),
+    color = color_scheme[3],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.15) +
+  geom_point(
+    data = q2_viz2 |>
+      filter(ingredient == "lecithin"),
+    color = color_scheme[3],
+    size = 2
+  ) +
+  scale_color_manual(values = c(color_scheme, "#AA0A27")) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.75, 3.75, 0.5)) +
+  labs(title = "Lecithin",
+       y = "Avg Rating (Out of 4)") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 10),
+        axis.text = element_text(size = 8))
+
+q2_SUGAR <- ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
+                                color = ingredient)) +
+  geom_line(alpha = 0.15) +
+  geom_line(
+    data = q2_viz2 |>
+      filter(ingredient == "sugar"),
+    color = color_scheme[4],
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.15) +
+  geom_point(
+    data = q2_viz2 |>
+      filter(ingredient == "sugar"),
+    color = color_scheme[4],
+    size = 2
+  ) +
+  scale_color_manual(values = c(color_scheme, "#AA0A27")) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.75, 3.75, 0.5)) +
+  labs(title = "Sugar") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 10),
+        axis.text = element_text(size = 8),
+        axis.text.y = element_blank())
+
+q2_VANILLA <- ggplot(q2_viz2, aes(x = review_date, y = avg_rating,
+                                color = ingredient)) +
+  geom_line(alpha = 0.15) +
+  geom_line(
+    data = q2_viz2 |>
+      filter(ingredient == "vanilla"),
+    color = "#AA0A27",
+    linewidth = 1.4
+  ) +
+  geom_point(alpha = 0.15) +
+  geom_point(
+    data = q2_viz2 |>
+      filter(ingredient == "vanilla"),
+    color = "#AA0A27",
+    size = 2
+  ) +
+  scale_color_manual(values = c(color_scheme, "#AA0A27")) +
+  scale_x_continuous(breaks = seq(2006, 2021, 5)) +
+  scale_y_continuous(breaks = seq(2.75, 3.75, 0.5)) +
+  labs(title = "Vanilla",
+       x = "Review Year") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 10),
+        axis.text = element_text(size = 8))
+
+layout <- "
+AABB
+CCDD
+#EE#
+"
+
+q2_BEANS + q2_BUTTER + q2_LEC + q2_SUGAR + q2_VANILLA +
+  plot_layout(design = layout) +
+  plot_annotation(
+    title = "Chocolate Bar Ratings Over Time",
+    subtitle = "By Presence of Ingredient",
+    theme = theme(
+      plot.title = element_text(hjust = 0.5,
+                                face = "bold"),
+      plot.subtitle = element_text(hjust = 0.5,
+                                   face = "bold")
+    )
+  ) &
+  theme(panel.background = element_rect(
+    fill = NA,
+    color  = 'black',
+    linewidth = 1
+  ))
 ```
 
 ```{r}
