@@ -29,6 +29,8 @@ color_scheme <- c("#A78B71", "#D4AF37", "#EC9704", "#9C4A1A")
 
 (1 paragraph): Project abstract.
 
+In this project, our team decided to analyze the Chocolate Bar Ratings data set provided by the Flavors of Cacao online database. Our project seeks to answer to key questions: where the highest-reviewed chocolate is produced and what ingredients comprise the chocolate with highest reviews. The visualizations are central to our project; we hope to clearly demonstrate our findings with our plots and show the trends within our data. In addition, we will include in-depth discussions of our approach and method and include why our analysis was performed the way it was. Lastly, we will discuss the trends present in our plots and connect our chocolate data to bigger themes and events that may have been going on at the same time.
+
 ------------------------------------------------------------------------
 
 ## Introduction
