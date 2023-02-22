@@ -7,5 +7,5 @@ editor: visual
 This project was developed by **The Blue Team** For [STA/ISS 313: Advanced Data Visualization](https://vizdata.org/) at Duke University. The team is comprised of the following team members.
 
 -   **Ryan Mitchell**: Junior majoring in Statistical Science and Computer Science.
--   **Luke Thomas**: One sentence description of Team member 2 (e.g., year, major, etc.).
--   **Jason Yang**: One sentence description of Team member 3 (e.g., year, major, etc.)
+-   **Luke Thomas**: Junior majoring in Computer Science and Statistical Science.
+-   **Jason Yang**: Junior majoring in Computer Science and pursuing a Statistics minor.
